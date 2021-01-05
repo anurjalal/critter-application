@@ -9,6 +9,8 @@ import com.udacity.jdnd.course3.critter.entity.Pet;
 import com.udacity.jdnd.course3.critter.service.CustomerService;
 import com.udacity.jdnd.course3.critter.service.EmployeeService;
 import com.udacity.jdnd.course3.critter.service.PetService;
+import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataAccessException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.DayOfWeek;
@@ -30,11 +32,13 @@ public class UserController {
     private final EmployeeService employeeService;
     private final CustomerService customerService;
     private final PetService petService;
+    private final ModelMapper modelMapper;
 
-    public UserController(EmployeeService employeeService, CustomerService customerService, PetService petService) {
+    public UserController(EmployeeService employeeService, CustomerService customerService, PetService petService, ModelMapper modelMapper) {
         this.employeeService = employeeService;
         this.customerService = customerService;
         this.petService = petService;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping("/customer")
@@ -54,11 +58,8 @@ public class UserController {
 
     @GetMapping("/customer/pet/{petId}")
     public CustomerDTO getOwnerByPet(@PathVariable Long petId) {
-        CustomerDTO customerDTO = new CustomerDTO();
-        if (customerService.getCustomerByPet(petId).isPresent()) {
-            customerDTO = convertCustomerToCustomerDTO(customerService.getCustomerByPet(petId).get());
-        }
-        return customerDTO;
+        Customer customer = customerService.getCustomerByPet(petId).orElseThrow(RuntimeException::new);
+        return convertCustomerToCustomerDTO(customer);
     }
 
     @PostMapping("/employee")
@@ -70,14 +71,8 @@ public class UserController {
 
     @PostMapping("/employee/{employeeId}")
     public EmployeeDTO getEmployee(@PathVariable Long employeeId) {
-        Optional<Employee> emp = employeeService.getEmployee(employeeId);
-        EmployeeDTO employeeDTO = new EmployeeDTO();
-        if (emp.isPresent()) {
-            employeeDTO = convertEmployeeToEmployeeDTO(emp.get());
-        } else {
-            //Handling
-        }
-        return employeeDTO;
+        Employee emp = employeeService.getEmployee(employeeId).orElseThrow(RuntimeException::new);
+        return convertEmployeeToEmployeeDTO(emp);
     }
 
     @PutMapping("/employee/{employeeId}")
@@ -94,19 +89,13 @@ public class UserController {
     }
 
     private EmployeeDTO convertEmployeeToEmployeeDTO(Employee employee) {
-        EmployeeDTO employeeDTO = new EmployeeDTO();
-        employeeDTO.setId(employee.getId());
-        employeeDTO.setName(employee.getName());
-        employeeDTO.setSkills(employee.getSkills());
+        EmployeeDTO employeeDTO = modelMapper.map(employee, EmployeeDTO.class);
         employee.getDaysAvailable().ifPresent(employeeDTO::setDaysAvailable);
         return employeeDTO;
     }
 
     private Employee convertEmployeeDTOToEmployee(EmployeeDTO employeeDTO) {
-        Employee employee = new Employee();
-        employee.setId(employeeDTO.getId());
-        employee.setName(employeeDTO.getName());
-        employee.setSkills(employeeDTO.getSkills());
+        Employee employee = modelMapper.map(employeeDTO, Employee.class);
         if (employeeDTO.getDaysAvailable() != null) {
             employee.setDaysAvailable(employeeDTO.getDaysAvailable());
         }
@@ -114,11 +103,7 @@ public class UserController {
     }
 
     private CustomerDTO convertCustomerToCustomerDTO(Customer customer) {
-        CustomerDTO customerDTO = new CustomerDTO();
-        customerDTO.setId(customer.getId());
-        customerDTO.setName(customer.getName());
-        customerDTO.setPhoneNumber(customer.getPhoneNumber());
-        customerDTO.setNotes(customer.getNotes());
+        CustomerDTO customerDTO = modelMapper.map(customer, CustomerDTO.class);
         List<Long> petIds = new ArrayList<>();
         customer.getPet().ifPresent(value -> value.forEach(pet -> petIds.add(pet.getId())));
         customerDTO.setPetIds(petIds);
@@ -126,10 +111,7 @@ public class UserController {
     }
 
     private Customer convertCustomerDTOToCustomer(CustomerDTO customerDTO) {
-        Customer customer = new Customer();
-        customer.setId(customerDTO.getId());
-        customer.setName(customerDTO.getName());
-        customer.setNotes(customerDTO.getName());
+        Customer customer = modelMapper.map(customerDTO, Customer.class);
         List<Pet> pet = new ArrayList<>();
         Optional.ofNullable(customerDTO.getPetIds()).ifPresent(pets -> pets.forEach(it -> {
             petService.getPet(it).ifPresent(pet::add);
