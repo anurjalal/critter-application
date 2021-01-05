@@ -16,16 +16,16 @@ public class Employee {
     @Nationalized
     private String name;
 
-    @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = EmployeeSkill.class)
     @CollectionTable(name = "employee_skill", joinColumns = @JoinColumn(name = "employee_id"))
     @Column(name = "skills")
+    @Enumerated(EnumType.STRING)
     private Set<EmployeeSkill> skills;
 
-    @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = DayOfWeek.class)
     @CollectionTable(name = "day_available", joinColumns = @JoinColumn(name = "employee_id"))
     @Column(name = "daysAvailable")
+    @Enumerated(EnumType.STRING)
     private Set<DayOfWeek> daysAvailable;
 
     public Long getId() {

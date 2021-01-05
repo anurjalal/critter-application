@@ -6,10 +6,9 @@ import com.udacity.jdnd.course3.critter.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeService {
@@ -33,8 +32,9 @@ public class EmployeeService {
     }
 
     public List<Employee> getEmployeeForService(Set<EmployeeSkill> employeeSkill, DayOfWeek dayOfWeek) {
-        Set<DayOfWeek> daysOfWeek = new HashSet<>();
-        daysOfWeek.add(dayOfWeek);
-        return employeeRepository.findEmployeeForService(employeeSkill, daysOfWeek);
+        List<Employee> employeesAvailabble = new ArrayList<>();
+        Optional<List<Employee>> employees = Optional.ofNullable(employeeRepository.findAllByDaysAvailableContaining(dayOfWeek));
+        employees.ifPresent(employeeList -> employeesAvailabble.addAll(employeeList.stream().filter(it -> it.getSkills().containsAll(employeeSkill)).collect(Collectors.toList())));
+        return employeesAvailabble;
     }
 }

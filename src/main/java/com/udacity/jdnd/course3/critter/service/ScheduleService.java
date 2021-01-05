@@ -5,6 +5,7 @@ import com.udacity.jdnd.course3.critter.repository.ScheduleRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ScheduleService {
@@ -23,16 +24,16 @@ public class ScheduleService {
         return scheduleRepository.findAll();
     }
 
-    public List<Schedule> getScheduleForPet(Long petId) {
-        return scheduleRepository.findScheduleForPet(petId);
+    public Optional<List<Schedule>> getScheduleForPet(Long petId) {
+        return Optional.ofNullable(scheduleRepository.findScheduleForPet(petId));
     }
 
-    public List<Schedule> getAllScheduleForEmployee(Long employeeId) {
-        return scheduleRepository.findScheduleForEmployee(employeeId);
+    public Optional<List<Schedule>> getScheduleForEmployee(Long employeeId) {
+        return Optional.ofNullable(scheduleRepository.findScheduleForEmployee(employeeId));
     }
 
-    public List<Schedule> getScheduleForCustomer(Long customerId) {
-        return scheduleRepository.findScheduleForCustomer(customerId);
+    public Optional<List<Schedule>> getScheduleForCustomer(Long customerId) {
+        return Optional.ofNullable(scheduleRepository.findScheduleForCustomer(customerId));
     }
 
 }
