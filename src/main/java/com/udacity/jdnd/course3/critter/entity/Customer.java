@@ -3,6 +3,7 @@ package com.udacity.jdnd.course3.critter.entity;
 import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,9 +14,11 @@ public class Customer {
     private Long id;
 
     @Nationalized
+    @NotNull
     private String name;
 
     @Nationalized
+    @NotNull
     private String phoneNumber;
 
     @Nationalized
@@ -48,8 +51,8 @@ public class Customer {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getNotes() {
-        return notes;
+    public Optional<String> getNotes() {
+        return Optional.ofNullable(notes);
     }
 
     public void setNotes(String notes) {

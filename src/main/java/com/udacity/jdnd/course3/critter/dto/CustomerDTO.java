@@ -1,5 +1,6 @@
 package com.udacity.jdnd.course3.critter.dto;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -8,6 +9,7 @@ import java.util.List;
  */
 public class CustomerDTO {
     private Long id;
+    @NotNull
     private String name;
     private String phoneNumber;
     private String notes;

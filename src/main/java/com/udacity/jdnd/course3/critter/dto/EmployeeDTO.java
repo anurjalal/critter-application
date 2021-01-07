@@ -2,6 +2,7 @@ package com.udacity.jdnd.course3.critter.dto;
 
 import com.udacity.jdnd.course3.critter.entity.EmployeeSkill;
 
+import javax.validation.constraints.NotNull;
 import java.time.DayOfWeek;
 import java.util.Set;
 
@@ -11,7 +12,9 @@ import java.util.Set;
  */
 public class EmployeeDTO {
     private Long id;
+    @NotNull
     private String name;
+    @NotNull
     private Set<EmployeeSkill> skills;
     private Set<DayOfWeek> daysAvailable;
 

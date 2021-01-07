@@ -2,6 +2,7 @@ package com.udacity.jdnd.course3.critter.dto;
 
 import com.udacity.jdnd.course3.critter.entity.EmployeeSkill;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -12,9 +13,13 @@ import java.util.Set;
  */
 public class ScheduleDTO {
     private Long id;
+    @NotNull
     private List<Long> employeeIds;
+    @NotNull
     private List<Long> petIds;
+    @NotNull
     private LocalDate date;
+    @NotNull
     private Set<EmployeeSkill> activities;
 
     public Long getId() {

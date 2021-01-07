@@ -10,6 +10,7 @@ import com.udacity.jdnd.course3.critter.service.ScheduleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +36,7 @@ public class ScheduleController {
     }
 
     @PostMapping
-    public ScheduleDTO createSchedule(@RequestBody ScheduleDTO scheduleDTO) {
+    public ScheduleDTO createSchedule(@Valid @RequestBody ScheduleDTO scheduleDTO) {
         Schedule schedule = convertScheduleDTOToSchedule(scheduleDTO);
         Schedule updated = scheduleService.createSchedule(schedule);
         return convertScheduleToScheduleDTO(updated);

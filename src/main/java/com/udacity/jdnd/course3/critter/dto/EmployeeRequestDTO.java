@@ -2,6 +2,7 @@ package com.udacity.jdnd.course3.critter.dto;
 
 import com.udacity.jdnd.course3.critter.entity.EmployeeSkill;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -10,7 +11,9 @@ import java.util.Set;
  * to the database directly.
  */
 public class EmployeeRequestDTO {
+    @NotNull
     private Set<EmployeeSkill> skills;
+    @NotNull
     private LocalDate date;
 
     public Set<EmployeeSkill> getSkills() {

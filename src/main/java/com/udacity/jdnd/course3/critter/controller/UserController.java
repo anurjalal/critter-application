@@ -10,9 +10,9 @@ import com.udacity.jdnd.course3.critter.service.CustomerService;
 import com.udacity.jdnd.course3.critter.service.EmployeeService;
 import com.udacity.jdnd.course3.critter.service.PetService;
 import org.modelmapper.ModelMapper;
-import org.springframework.dao.DataAccessException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @PostMapping("/customer")
-    public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO) {
+    public CustomerDTO saveCustomer(@Valid @RequestBody CustomerDTO customerDTO) {
         Customer customer = convertCustomerDTOToCustomer(customerDTO);
         Customer updated = customerService.saveCustomer(customer);
         return convertCustomerToCustomerDTO(updated);
@@ -63,13 +63,14 @@ public class UserController {
     }
 
     @PostMapping("/employee")
-    public EmployeeDTO saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
+    public EmployeeDTO saveEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
         Employee emp = convertEmployeeDTOToEmployee(employeeDTO);
         Employee updated = employeeService.saveEmployee(emp);
         return convertEmployeeToEmployeeDTO(updated);
     }
 
-    @PostMapping("/employee/{employeeId}")
+    //change from POST to GET
+    @GetMapping("/employee/{employeeId}")
     public EmployeeDTO getEmployee(@PathVariable Long employeeId) {
         Employee emp = employeeService.getEmployee(employeeId).orElseThrow(RuntimeException::new);
         return convertEmployeeToEmployeeDTO(emp);
@@ -81,7 +82,7 @@ public class UserController {
     }
 
     @GetMapping("/employee/availability")
-    public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeDTO) {
+    public List<EmployeeDTO> findEmployeesForService(@Valid @RequestBody EmployeeRequestDTO employeeDTO) {
         List<Employee> employees = employeeService.getEmployeeForService(employeeDTO.getSkills(), employeeDTO.getDate().getDayOfWeek());
         List<EmployeeDTO> employeeDTOs = new ArrayList<>();
         employees.forEach(emp -> employeeDTOs.add(convertEmployeeToEmployeeDTO(emp)));
@@ -90,6 +91,7 @@ public class UserController {
 
     private EmployeeDTO convertEmployeeToEmployeeDTO(Employee employee) {
         EmployeeDTO employeeDTO = modelMapper.map(employee, EmployeeDTO.class);
+        employeeDTO.setDaysAvailable(employee.getDaysAvailable().orElse(null));
         employee.getDaysAvailable().ifPresent(employeeDTO::setDaysAvailable);
         return employeeDTO;
     }
@@ -104,6 +106,7 @@ public class UserController {
 
     private CustomerDTO convertCustomerToCustomerDTO(Customer customer) {
         CustomerDTO customerDTO = modelMapper.map(customer, CustomerDTO.class);
+        customerDTO.setNotes(customer.getNotes().orElse(null));
         List<Long> petIds = new ArrayList<>();
         customer.getPet().ifPresent(value -> value.forEach(pet -> petIds.add(pet.getId())));
         customerDTO.setPetIds(petIds);
@@ -116,7 +119,7 @@ public class UserController {
         Optional.ofNullable(customerDTO.getPetIds()).ifPresent(pets -> pets.forEach(it -> {
             petService.getPet(it).ifPresent(pet::add);
         }));
-        Optional.of(pet).ifPresent(customer::setPet);
+        customer.setPet(pet);
         return customer;
     }
 }

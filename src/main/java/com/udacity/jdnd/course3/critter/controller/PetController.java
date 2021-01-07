@@ -8,6 +8,7 @@ import com.udacity.jdnd.course3.critter.service.PetService;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,7 +31,7 @@ public class PetController {
     }
 
     @PostMapping
-    public PetDTO savePet(@RequestBody PetDTO petDTO) {
+    public PetDTO savePet(@Valid @RequestBody PetDTO petDTO) {
         Pet pet = convertPetDTOToPet(petDTO);
         Pet updated = petService.savePet(pet);
         return convertPetToPetDTO(updated);
@@ -54,13 +55,15 @@ public class PetController {
     }
 
     private PetDTO convertPetToPetDTO(Pet pet) {
-        PetDTO petDTO  = modelMapper.map(pet, PetDTO.class);
+        PetDTO petDTO = modelMapper.map(pet, PetDTO.class);
+        petDTO.setBirthDate(pet.getBirthDate().orElse(null));
+        petDTO.setNotes(pet.getNotes().orElse(null));
         pet.getCustomer().ifPresent(value -> petDTO.setOwnerId(value.getId()));
         return petDTO;
     }
 
     private Pet convertPetDTOToPet(PetDTO petDTO) {
-        Pet pet = modelMapper.map(petDTO,Pet.class);
+        Pet pet = modelMapper.map(petDTO, Pet.class);
         if (petDTO.getOwnerId() != null) {
             Optional<Customer> cus = customerService.getCustomer(petDTO.getOwnerId());
             if (cus.isPresent()) {

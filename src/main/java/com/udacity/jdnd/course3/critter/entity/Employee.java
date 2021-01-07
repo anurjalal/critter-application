@@ -3,6 +3,7 @@ package com.udacity.jdnd.course3.critter.entity;
 import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.DayOfWeek;
 import java.util.Optional;
 import java.util.Set;
@@ -14,12 +15,14 @@ public class Employee {
     private Long id;
 
     @Nationalized
+    @NotNull
     private String name;
 
     @ElementCollection(targetClass = EmployeeSkill.class)
     @CollectionTable(name = "employee_skill", joinColumns = @JoinColumn(name = "employee_id"))
     @Column(name = "skills")
     @Enumerated(EnumType.STRING)
+    @NotNull
     private Set<EmployeeSkill> skills;
 
     @ElementCollection(targetClass = DayOfWeek.class)

@@ -2,6 +2,8 @@ package com.udacity.jdnd.course3.critter.dto;
 
 import com.udacity.jdnd.course3.critter.entity.PetType;
 
+
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 /**
@@ -10,7 +12,9 @@ import java.time.LocalDate;
  */
 public class PetDTO {
     private Long id;
+    @NotNull
     private PetType type;
+    @NotNull
     private String name;
     private Long ownerId;
     private LocalDate birthDate;

@@ -3,6 +3,7 @@ package com.udacity.jdnd.course3.critter.entity;
 import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -13,12 +14,14 @@ public class Pet {
     private Long id;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
     private PetType type;
 
     @Nationalized
+    @NotNull
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY,  cascade = CascadeType.ALL)
+    @ManyToOne(fetch=FetchType.LAZY)
     private Customer customer;
 
     private LocalDate birthDate;
@@ -58,16 +61,16 @@ public class Pet {
         this.customer = customer;
     }
 
-    public LocalDate getBirthDate() {
-        return birthDate;
+    public Optional<LocalDate> getBirthDate() {
+        return Optional.ofNullable(birthDate);
     }
 
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 
-    public String getNotes() {
-        return notes;
+    public Optional<String> getNotes() {
+        return Optional.ofNullable(notes);
     }
 
     public void setNotes(String notes) {
