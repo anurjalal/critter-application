@@ -10,7 +10,7 @@ import java.util.Optional;
 @Entity
 public class Pet {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
@@ -21,7 +21,7 @@ public class Pet {
     @NotNull
     private String name;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Customer customer;
 
     private LocalDate birthDate;

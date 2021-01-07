@@ -16,7 +16,7 @@ services:
     restart: on-failure
     depends_on:
       - db-mysql
-    command: ["./wait-for-it.sh", "db-mysql:3306", "--", "java", "-jar", "critter.jar"]
+    command: ["/home/critter/wait-for-it.sh", "db-mysql:3306", "--", "java", "-jar", "/home/critter/target/critter-0.0.1-SNAPSHOT.jar"]
     ports:
       - "8080"
     build:

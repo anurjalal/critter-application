@@ -8,7 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class EmployeeService {
@@ -39,9 +42,9 @@ public class EmployeeService {
     public List<Employee> getEmployeeForService(Set<EmployeeSkill> employeeSkill, DayOfWeek dayOfWeek) {
         List<Employee> employeesAvailabble = new ArrayList<>();
         List<Employee> employees = employeeRepository.findAllByDaysAvailableContaining(dayOfWeek);
-        for(Employee e: employees){
-            if(e.getDaysAvailable().isPresent()){
-                if(e.getSkills().containsAll(employeeSkill)){
+        for (Employee e : employees) {
+            if (e.getDaysAvailable().isPresent()) {
+                if (e.getSkills().containsAll(employeeSkill)) {
                     employeesAvailabble.add(e);
                 }
             }

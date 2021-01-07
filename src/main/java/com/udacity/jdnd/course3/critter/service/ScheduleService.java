@@ -16,7 +16,7 @@ public class ScheduleService {
         this.scheduleRepository = scheduledRepository;
     }
 
-    public Schedule createSchedule(Schedule schedule){
+    public Schedule createSchedule(Schedule schedule) {
         return scheduleRepository.save(schedule);
     }
 

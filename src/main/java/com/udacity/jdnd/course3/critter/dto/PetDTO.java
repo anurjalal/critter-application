@@ -2,7 +2,6 @@ package com.udacity.jdnd.course3.critter.dto;
 
 import com.udacity.jdnd.course3.critter.entity.PetType;
 
-
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 

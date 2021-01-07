@@ -17,23 +17,23 @@ public class PetService {
         this.petRepository = petRepository;
     }
 
-    public Pet savePet(Pet pet){
-        if(pet.getCustomer().isPresent()){
+    public Pet savePet(Pet pet) {
+        if (pet.getCustomer().isPresent()) {
             Customer cus = pet.getCustomer().get();
             cus.addPet(pet);
         }
         return petRepository.save(pet);
     }
 
-    public Optional<Pet> getPet(Long id){
-       return petRepository.findById(id);
+    public Optional<Pet> getPet(Long id) {
+        return petRepository.findById(id);
     }
 
-    public List<Pet> getAllPets(){
+    public List<Pet> getAllPets() {
         return petRepository.findAll();
     }
 
-    public Optional<List<Pet>> getPetsByOwner(Long ownerId){
+    public Optional<List<Pet>> getPetsByOwner(Long ownerId) {
         return Optional.ofNullable(petRepository.findPetsByOwner(ownerId));
     }
 }
