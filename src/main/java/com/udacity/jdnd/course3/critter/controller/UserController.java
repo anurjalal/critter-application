@@ -58,7 +58,7 @@ public class UserController {
 
     @GetMapping("/customer/pet/{petId}")
     public CustomerDTO getOwnerByPet(@PathVariable Long petId) {
-        Customer customer = customerService.getCustomerByPet(petId).orElseThrow(RuntimeException::new);
+        Customer customer = customerService.getCustomerByPet(petId);
         return convertCustomerToCustomerDTO(customer);
     }
 
@@ -72,7 +72,7 @@ public class UserController {
     //change from POST to GET
     @GetMapping("/employee/{employeeId}")
     public EmployeeDTO getEmployee(@PathVariable Long employeeId) {
-        Employee emp = employeeService.getEmployee(employeeId).orElseThrow(RuntimeException::new);
+        Employee emp = employeeService.getEmployee(employeeId);
         return convertEmployeeToEmployeeDTO(emp);
     }
 
@@ -117,7 +117,7 @@ public class UserController {
         Customer customer = modelMapper.map(customerDTO, Customer.class);
         List<Pet> pet = new ArrayList<>();
         Optional.ofNullable(customerDTO.getPetIds()).ifPresent(pets -> pets.forEach(it -> {
-            petService.getPet(it).ifPresent(pet::add);
+            pet.add(petService.getPet(it));
         }));
         customer.setPet(pet);
         return customer;

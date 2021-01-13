@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -39,7 +38,7 @@ public class PetController {
 
     @GetMapping("/{petId}")
     public PetDTO getPet(@PathVariable Long petId) {
-        Pet pet = petService.getPet(petId).orElseThrow(RuntimeException::new);
+        Pet pet = petService.getPet(petId);
         return convertPetToPetDTO(pet);
     }
 
@@ -50,7 +49,7 @@ public class PetController {
 
     @GetMapping("/owner/{ownerId}")
     public List<PetDTO> getPetsByOwner(@PathVariable Long ownerId) {
-        List<Pet> pets = petService.getPetsByOwner(ownerId).orElseThrow(RuntimeException::new);
+        List<Pet> pets = petService.getPetsByOwner(ownerId);
         return pets.stream().map(this::convertPetToPetDTO).collect(Collectors.toList());
     }
 
@@ -65,11 +64,8 @@ public class PetController {
     private Pet convertPetDTOToPet(PetDTO petDTO) {
         Pet pet = modelMapper.map(petDTO, Pet.class);
         if (petDTO.getOwnerId() != null) {
-            Optional<Customer> cus = customerService.getCustomer(petDTO.getOwnerId());
-            if (cus.isPresent()) {
-                Customer owner = cus.get();
-                pet.setCustomer(owner);
-            }
+            Customer owner = customerService.getCustomer(petDTO.getOwnerId());
+            pet.setCustomer(owner);
         }
         return pet;
     }

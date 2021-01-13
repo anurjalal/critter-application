@@ -11,9 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -52,32 +50,26 @@ public class ScheduleController {
 
     @GetMapping("/pet/{petId}")
     public List<ScheduleDTO> getScheduleForPet(@PathVariable Long petId) {
-        Optional<List<Schedule>> schedules = scheduleService.getScheduleForPet(petId);
-        List<ScheduleDTO> scheduleDTOs = new ArrayList<>();
-        schedules.ifPresent(scheduleList -> scheduleDTOs.addAll(scheduleList.stream()
+        List<Schedule> schedules = scheduleService.getScheduleForPet(petId);
+        return schedules.stream()
                 .map(this::convertScheduleToScheduleDTO)
-                .collect(Collectors.toList())));
-        return scheduleDTOs;
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/employee/{employeeId}")
     public List<ScheduleDTO> getScheduleForEmployee(@PathVariable Long employeeId) {
-        Optional<List<Schedule>> schedules = scheduleService.getScheduleForEmployee(employeeId);
-        List<ScheduleDTO> scheduleDTOs = new ArrayList<>();
-        schedules.ifPresent(scheduleList -> scheduleDTOs.addAll(scheduleList.stream()
+        List<Schedule> schedules = scheduleService.getScheduleForEmployee(employeeId);
+        return schedules.stream()
                 .map(this::convertScheduleToScheduleDTO)
-                .collect(Collectors.toList())));
-        return scheduleDTOs;
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/customer/{customerId}")
     public List<ScheduleDTO> getScheduleForCustomer(@PathVariable Long customerId) {
-        Optional<List<Schedule>> schedules = scheduleService.getScheduleForCustomer(customerId);
-        List<ScheduleDTO> scheduleDTOs = new ArrayList<>();
-        schedules.ifPresent(scheduleList -> scheduleDTOs.addAll(scheduleList.stream()
+        List<Schedule> schedules = scheduleService.getScheduleForCustomer(customerId);
+        return schedules.stream()
                 .map(this::convertScheduleToScheduleDTO)
-                .collect(Collectors.toList())));
-        return scheduleDTOs;
+                .collect(Collectors.toList());
     }
 
     private ScheduleDTO convertScheduleToScheduleDTO(Schedule schedule) {
@@ -92,12 +84,10 @@ public class ScheduleController {
     private Schedule convertScheduleDTOToSchedule(ScheduleDTO scheduleDTO) {
         Schedule schedule = modelMapper.map(scheduleDTO, Schedule.class);
         schedule.setPet(scheduleDTO.getPetIds().stream().
-                filter(it -> petService.getPet(it).isPresent()).
-                map(it -> petService.getPet(it).get()).
+                map(petService::getPet).
                 collect(Collectors.toList()));
         schedule.setEmployee(scheduleDTO.getEmployeeIds().stream().
-                filter(it -> employeeService.getEmployee(it).isPresent()).
-                map(it -> employeeService.getEmployee(it).get()).
+                map(employeeService::getEmployee).
                 collect(Collectors.toList()));
         return schedule;
     }
