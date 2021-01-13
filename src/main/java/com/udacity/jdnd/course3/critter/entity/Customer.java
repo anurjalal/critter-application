@@ -1,5 +1,7 @@
 package com.udacity.jdnd.course3.critter.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
@@ -8,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Entity
+@Getter @Setter
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,44 +30,12 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Pet> pet;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
     public Optional<String> getNotes() {
         return Optional.ofNullable(notes);
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
     public Optional<List<Pet>> getPet() {
         return Optional.ofNullable(pet);
-    }
-
-    public void setPet(List<Pet> pet) {
-        this.pet = pet;
     }
 
     public void addPet(Pet pet) {
